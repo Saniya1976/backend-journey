@@ -1,59 +1,44 @@
-const http = require('http');
-const url = require('url');
-const querystring = require('querystring');
+const express = require('express');
+const morgan = require('morgan');
 
-const server = http.createServer((req, res) => {
-  const body = [];
+const server = express();
 
-  req.on('data', (chunk) => {
-    console.log('Received chunk:', chunk);
-    body.push(chunk);
-  });
+// Built-in middleware to parse JSON bodies
+server.use(express.json());
 
-  req.on('end', () => {
-    const parsedBody = Buffer.concat(body).toString();
-    console.log('Request Body:', parsedBody);
+// Built-in middleware to parse URL-encoded bodies (like form submissions)
+server.use(express.urlencoded({ extended: true }));
 
-    res.setHeader('Content-Type', 'text/html');
+// Third-party middleware for logging HTTP requests
+server.use(morgan('dev'));
 
-    // Serve form on GET /
-    if (req.url === '/' && req.method === 'GET') {
-      res.write('<html>');
-      res.write('<head><title>Home Page</title></head>');
-      res.write('<body>');
-      res.write('<form action="/about" method="POST">');
-      res.write('<input type="text" name="username" placeholder="Enter your name" />');
-      res.write('<button type="submit">Submit</button>');
-      res.write('</form>');
-      res.write('</body>');
-      res.write('</html>');
-      res.end();
+// Custom middleware example: logs the current timestamp for every request
+server.use((req, res, next) => {
+  console.log("hello babe this is middleware");
+  next(); // pass control to the next middleware or route handler
+});
 
-    // Handle GET /about?username=value
-    } else if (req.url.toLowerCase().startsWith('/about') && req.method === 'GET') {
-      const parsedUrl = url.parse(req.url);
-      const queryParams = querystring.parse(parsedUrl.query);
-      const username = queryParams.username || 'Guest';
+// Root route handler
+server.get('/', (req, res) => {
+  res.send('hello world');
+});
 
-      res.write('<html>');
-      res.write('<head><title>About Page</title></head>');
-      res.write('<body>');
-      res.write(`<h1>Hello, ${username}!</h1>`);
-      res.write('</body>');
-      res.write('</html>');
-      res.end();
+// About page route handler
+server.get('/about', (req, res) => {
+  res.send('hello babe this is about page');
+});
 
-    } else {
-      res.statusCode = 404;
-      res.write('<html>');
-      res.write('<head><title>404 Not Found</title></head>');
-      res.write('<body><h1>404 Not Found</h1></body>');
-      res.write('</html>');
-      res.end();
-    }
-  });
+// 404 Middleware (catch-all for undefined routes)
+server.use((req, res) => {
+  res.status(404).send('Page not found');
+});
+
+// Error-handling middleware (for any errors thrown in routes/middleware)
+server.use((err, req, res, next) => {
+  console.error('Error:', err.stack);
+  res.status(500).send('Something broke!');
 });
 
 server.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
+  console.log('server is running on http://localhost:3000');
 });
