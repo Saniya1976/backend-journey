@@ -18,5 +18,20 @@
   "bugs": {
     "url": "https://github.com/Saniya1976/backend-journey/issues"
   },
-  "homepage": "https://github.com/Saniya1976/backend-journey#readme"
+  "homepage": "https://github.com/Saniya1976/backend-journey#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "cookie-parser": "^1.4.7",
+    "morgan": "^1.10.0",
+    "ejs": "^3.1.10",
+     "mongoose" :"^8.15.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "enginesStrict": true,
+  "private": true
 }

@@ -1,6 +1,11 @@
 const express = require('express');
 const morgan = require('morgan');
 
+
+const mongoose = require('mongoose');
+const User = require('./models/user');
+
+const dbconnection=require('./config/db'); // Assuming you have a db.js file for database connection
 const server = express();
 
 // Built-in middleware to parse JSON bodies
