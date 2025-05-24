@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
-const connection=mongoose.createConnection('mongodb://localhost:27017/backend-practice', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false
-});
+
+mongoose.connect('mongodb://localhost:27017/backend-practice')
+  .then(() => {
+    console.log('MongoDB connected!');
+  })
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+  });
+
